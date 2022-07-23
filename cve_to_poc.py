@@ -2,9 +2,8 @@ import requests
 import re
 import json
 
-def cve_2_poc(cve_ids):
+def cve_to_poc(cve_ids):
     final_dict = {}
-    final_list = []
     for cve in cve_ids:
         poc_list = []
 
@@ -25,22 +24,22 @@ def cve_2_poc(cve_ids):
         poc_data = json.loads(response_string)
         for poc in poc_data:
             poc_list.append(poc["html_url"])
+        #final dict for cve-poc data 
         final_dict[cve] = poc_list
-    final_list.append(final_dict)
-    return final_list
+
+    return final_dict
 
 #Accepting comma separated CVEs
-cve_ids = input("Enter the CVEids : ")
+cve_ids = input("Enter the CVEids : ").upper()
 cve_ids = cve_ids.split(",")
 
 #fetching POCs
-poc_data = cve_2_poc(cve_ids)
+poc_dict = cve_to_poc(cve_ids)
 
 #printing the POC list
-for cve_poc_dict in poc_data:
-    for cve,poc_list in cve_poc_dict.items():
-        print(cve," : ")
-        if(poc_list == []):
-            print("\t No POCs found")
-        for poc in poc_list:
-            print("\t",poc)
+for cve,poc_list in poc_dict.items():
+    print(cve," : ")
+    if(poc_list == []):
+        print("\t No POCs found")
+    for poc in poc_list:
+        print("\t",poc)
